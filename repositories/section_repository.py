@@ -1,4 +1,4 @@
-from boto3.dynamodb.conditions import Attr
+from boto3.dynamodb.conditions import Attr, Key
 from config.dynamodb import table
 
 class SectionRepository:
@@ -33,10 +33,7 @@ class SectionRepository:
         try:
             response = table.query(
                 IndexName = 'section-sections',
-                KeyConditionExpression = Attr('section').eq(section)
-                ExpressionAttributeValues = {
-                    ':section': section
-                }
+                KeyConditionExpression = Key('section').eq(section)
             )
             return response.get('Items', [])
         except Exception as e:

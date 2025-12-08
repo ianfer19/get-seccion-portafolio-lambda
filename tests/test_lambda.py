@@ -76,5 +76,27 @@ class TestSectionService(unittest.TestCase):
         self.assertEqual(response['statusCode'], 500)
         self.assertIn('DynamoDB Error', response['body'])
 
+    @patch.object(SectionRepository, 'get_section_by_section')
+    def test_get_section_by_section_success(self, mock_get_by_section):
+        mock_get_by_section.return_value = self.mock_items[0]
+        
+        service = SectionService()
+        event = {'queryStringParameters': {'section': 'about'}}
+        response = service.get_sections(event)
+        
+        self.assertEqual(response['statusCode'], 200)
+        self.assertIn('Iam Alejandro Fernández', response['body'])
+        self.assertNotIn('Skills', response['body'])
+
+    @patch.object(SectionRepository, 'get_section_by_section')
+    def test_get_section_by_section_not_found(self, mock_get_by_section):
+        mock_get_by_section.return_value = None
+        
+        service = SectionService()
+        event = {'queryStringParameters': {'section': '999'}}
+        response = service.get_sections(event)
+        
+        self.assertEqual(response['statusCode'], 404)
+
 if __name__ == '__main__':
     unittest.main()
