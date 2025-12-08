@@ -28,3 +28,17 @@ class SectionRepository:
         except Exception as e:
             print(f"Error fetching section by name {name}: {str(e)}")
             raise e
+
+    def get_section_by_section(self, section):
+        try:
+            response = table.query(
+                IndexName = 'section-sections',
+                KeyConditionExpression = Attr('section').eq(section)
+                ExpressionAttributeValues = {
+                    ':section': section
+                }
+            )
+            return response.get('Items', [])
+        except Exception as e:
+            print(f"Error fetching section by id {section}: {str(e)}")
+            raise e
